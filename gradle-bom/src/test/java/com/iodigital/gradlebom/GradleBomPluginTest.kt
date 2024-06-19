@@ -1,19 +1,17 @@
-package com.example.plugin;
+package com.iodigital.gradlebom
 
-import org.gradle.testfixtures.ProjectBuilder;
-import org.gradle.api.Project;
-import org.junit.Test;
-import static org.junit.Assert.assertNotNull;
+import org.gradle.testfixtures.ProjectBuilder
+import org.junit.Assert
+import org.junit.Test
 
-
-public class GreetingPluginTest {
+class GradleBomPluginTest {
     @Test
-    public void pluginRegistersATask() {
+    fun pluginRegistersATask() {
         // Create a test project and apply the plugin
-        Project project = ProjectBuilder.builder().build();
-        project.getPlugins().apply("com.example.plugin.greeting");
+        val project = ProjectBuilder.builder().build()
+        project.plugins.apply("com.example.plugin.greeting")
 
         // Verify the result
-        assertNotNull(project.getTasks().findByName("greet"));
+        Assert.assertNotNull(project.tasks.findByName("greet"))
     }
 }

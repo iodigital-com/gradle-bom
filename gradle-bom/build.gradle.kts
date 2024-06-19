@@ -1,6 +1,7 @@
 plugins {
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
     `java-gradle-plugin`
+    kotlin("jvm")
 }
 
 repositories {
@@ -11,13 +12,14 @@ repositories {
 dependencies {
     // Use JUnit test framework for unit tests
     testImplementation("junit:junit:4.13")
+    implementation(kotlin("stdlib-jdk8"))
+    implementation("com.google.code.gson:gson:2.11.0")
 }
 
 gradlePlugin {
-    // Define the plugin
-    val greeting by plugins.creating {
-        id = "com.example.plugin.greeting"
-        implementationClass = "com.example.plugin.GreetingPlugin"
+    val gradleBom by plugins.creating {
+        id = "com.iodigital.gradlebom.plugin"
+        implementationClass = "com.iodigital.gradlebom.GradleBomPlugin"
     }
 }
 
@@ -35,4 +37,8 @@ val functionalTestTask = tasks.register<Test>("functionalTest") {
 tasks.check {
     // Run the functional tests as part of `check`
     dependsOn(functionalTestTask)
+}
+
+kotlin {
+    jvmToolchain(17)
 }

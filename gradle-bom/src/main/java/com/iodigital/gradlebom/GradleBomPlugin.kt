@@ -1,12 +1,12 @@
-package com.example.plugin;
+package com.iodigital.gradlebom
 
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
+import com.iodigital.gradlebom.tasks.GenerateModuleBomTask
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
-public class GreetingPlugin implements Plugin<Project> {
-    public void apply(Project project) {
-        project.getTasks().register("greet", task -> {
-            task.doLast(s -> System.out.println("Hello from plugin 'com.example.plugin.greeting'"));
-        });
+class GradleBomPlugin : Plugin<Project> {
+    override fun apply(project: Project) {
+        project.tasks.register("generateBom", GenerateModuleBomTask::class.java)
+        project.tasks.register("generateBuildEnvironmentBom", GenerateModuleBomTask::class.java)
     }
 }

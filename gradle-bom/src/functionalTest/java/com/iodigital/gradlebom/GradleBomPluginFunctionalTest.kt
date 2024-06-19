@@ -1,45 +1,46 @@
-package com.example.plugin;
+package com.iodigital.gradlebom
 
-import org.gradle.testkit.runner.BuildResult;
-import org.gradle.testkit.runner.GradleRunner;
-import org.junit.Test;
+import org.gradle.testkit.runner.GradleRunner
+import org.junit.Assert
+import org.junit.Test
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+import java.nio.file.Files
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.nio.file.Files;
-
-import static org.junit.Assert.assertTrue;
-
-
-public class GreetingPluginFunctionalTest {
+class GradleBomPluginFunctionalTest {
     @Test
-    public void canRunTask() throws IOException {
+    @Throws(IOException::class)
+    fun canRunTask() {
         // Setup the test build
-        File projectDir = new File("build/functionalTest");
-        Files.createDirectories(projectDir.toPath());
-        writeString(new File(projectDir, "settings.gradle"), "");
-        writeString(new File(projectDir, "build.gradle"),
-            "plugins {" +
-                "  id('com.example.plugin.greeting')" +
-                "}");
+        val projectDir = File("../test-target")
+//        Files.createDirectories(projectDir.toPath())
+//        writeString(File(projectDir, "settings.gradle"), "")
+//        writeString(
+//            File(projectDir, "build.gradle"),
+//            """
+//                plugins {
+//                    id('com.iodigital.gradlebom.plugin')
+//                }
+//            """.trimIndent()
+//        )
 
         // Run the build
-        BuildResult result = GradleRunner.create()
+        val result = GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("greet")
+            .withArguments(":app:generateBom")
             .withProjectDir(projectDir)
-            .build();
+            .build()
 
         // Verify the result
-        assertTrue(result.getOutput().contains("Hello from plugin 'com.example.plugin.greeting'"));
+        Assert.assertTrue(result.output.contains("Hello from plugin 'com.example.plugin.greeting'"))
     }
 
-    private void writeString(File file, String string) throws IOException {
-        try (Writer writer = new FileWriter(file)) {
-            writer.write(string);
+    @Throws(IOException::class)
+    private fun writeString(file: File, string: String) {
+        FileWriter(file).use { writer ->
+            writer.write(string)
         }
     }
 }

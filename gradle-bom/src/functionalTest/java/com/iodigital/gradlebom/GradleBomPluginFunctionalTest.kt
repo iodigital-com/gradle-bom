@@ -765,7 +765,7 @@ Configuration cache entry reused.
         val result = GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("generateBom")
+            .withArguments("generateBom", "--configuration=test")
             .withProjectDir(projectDir)
             .withEnvironment(mapOf("mockDependencyTreeFile" to mockFile.absolutePath))
             .build()

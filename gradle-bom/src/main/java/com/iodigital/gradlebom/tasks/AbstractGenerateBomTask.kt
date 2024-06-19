@@ -8,6 +8,7 @@ import org.gradle.api.tasks.TaskAction
 
 abstract class AbstractGenerateBomTask : DefaultTask() {
 
+    override fun getGroup() = "Software Bill-of-Materials"
     @TaskAction
     fun generateBom() {
         val generator = GradleDependencyTreeGenerator()

@@ -2,6 +2,7 @@ plugins {
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
     `java-gradle-plugin`
     kotlin("jvm")
+    id("com.gradle.plugin-publish") version "1.2.1"
 }
 
 repositories {
@@ -17,10 +18,20 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
 }
 
+group = "com.iodigital.gradlebom"
+version = "1.0"
+
+@Suppress("UnstableApiUsage")
 gradlePlugin {
+    website = "https://github.com/iodigital-com/gradle-bom"
+    vcsUrl = "https://github.com/iodigital-com/gradle-bom"
+
     val gradleBom by plugins.creating {
         id = "com.iodigital.gradlebom"
         implementationClass = "com.iodigital.gradlebom.GradleBomPlugin"
+        displayName = "Gradle BOM Generation"
+        description = "CyclonDX Software Bill-of-Material generation"
+        tags = listOf("bom", "sbom", "cyclonedx", "dependencytrack")
     }
 }
 
@@ -32,11 +43,12 @@ configurations[functionalTest.implementationConfigurationName].extendsFrom(confi
 
 val functionalTestTask = tasks.register<Test>("functionalTest") {
     testClassesDirs = functionalTest.output.classesDirs
-    classpath = configurations[functionalTest.runtimeClasspathConfigurationName] + functionalTest.output
+    classpath =
+        configurations[functionalTest.runtimeClasspathConfigurationName] + functionalTest.output
 }
 
 tasks.check {
-    // Run the functional tests as part of `check`
+// Run the functional tests as part of `check`
     dependsOn(functionalTestTask)
 }
 

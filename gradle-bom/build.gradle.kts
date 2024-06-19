@@ -2,7 +2,7 @@ plugins {
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
     `java-gradle-plugin`
     kotlin("jvm")
-    id("com.gradle.plugin-publish") version "1.2.1"
+    `maven-publish`
 }
 
 repositories {
@@ -19,7 +19,7 @@ dependencies {
 }
 
 group = "com.iodigital.gradlebom"
-version = "1.0"
+version = "1.0.9"
 
 @Suppress("UnstableApiUsage")
 gradlePlugin {
@@ -54,4 +54,14 @@ tasks.check {
 
 kotlin {
     jvmToolchain(17)
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "localPluginRepository"
+            url = uri("../../local-plugin-repository")
+
+        }
+    }
 }

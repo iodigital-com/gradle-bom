@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture
 class GradleDependencyTreeGenerator {
     fun <T> generateDependencyTree(
         command: String,
-        project: Project,
+        root: File,
         withOutput: (BufferedReader) -> T,
     ): T {
         // Mock for testing....ugly but ok for now
@@ -17,7 +17,7 @@ class GradleDependencyTreeGenerator {
             return withOutput(File(it).bufferedReader())
         }
 
-        val updatedCommand = modifyCommandLine(command, project.rootDir)
+        val updatedCommand = modifyCommandLine(command, root)
         println("Starting nested gradle invocation to generate dependency tree: $updatedCommand")
         println("============")
         val rt = Runtime.getRuntime()

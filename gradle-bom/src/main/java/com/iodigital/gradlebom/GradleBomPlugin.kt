@@ -8,24 +8,37 @@ import org.gradle.api.Project
 
 class GradleBomPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        project.afterEvaluate {
-            val suffix = "RuntimeClasspath"
-            project.configurations
-                .filter { it.name.endsWith(suffix) }
-                .forEach { config ->
-                    project.tasks.register(
-                        "generate${config.name.removeSuffix(suffix)}Bom",
-                        SpecificGenerateModuleBomTask::class.java,
-                        config.name
-                    )
-                }
-        }
+        project.createTasks()
 
         project.tasks.register(
             "generateBuildEnvironmentBom",
             GenerateBuildEnvironmentBomTask::class.java
         )
+    }
 
-        project.tasks.register("generateBom", GenericGenerateModuleBomTask::class.java)
+    private fun Project.createTasks(): Unit = afterEvaluate {
+        val suffix = "Implementation"
+
+        project.tasks.register(
+            "generateBom",
+            GenericGenerateModuleBomTask::class.java
+        )
+
+        configurations
+            .filter { it.name.endsWith(suffix) }
+            .map { it.name.removeSuffix(suffix) }
+            .distinct()
+            .sorted()
+            .forEach { config ->
+                project.tasks.register(
+                    "generate${config.replaceFirstChar { it.uppercase() }}Bom",
+                    SpecificGenerateModuleBomTask::class.java,
+                    config
+                )
+            }
+
+        subprojects.forEach { sub ->
+            sub.createTasks()
+        }
     }
 }

@@ -10,6 +10,6 @@ open class SpecificGenerateModuleBomTask @Inject constructor(
 
     override fun createdNestedGradleCommand(): String {
         val command = "${project.path.removeSuffix(":")}:dependencies"
-        return "./gradlew $command --configuration $configName --no-daemon"
+        return "./gradlew $command --configuration ${configName}RuntimeClasspath --no-daemon"
     }
 }

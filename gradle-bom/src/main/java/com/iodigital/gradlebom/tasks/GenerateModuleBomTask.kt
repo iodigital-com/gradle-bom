@@ -2,7 +2,7 @@ package com.iodigital.gradlebom.tasks
 
 open class GenerateModuleBomTask : AbstractGenerateBomTask() {
 
-    override fun generateNestedGradleCommand(): String {
+    override fun createdNestedGradleCommand(): String {
         val configuration = project.findProperty("configuration")?.toString()
             ?: "releaseRuntimeClasspath"
         val command = "${project.path.removeSuffix(":")}:dependencies"

@@ -9,9 +9,9 @@ class GradleBomPluginTest {
     fun pluginRegistersATask() {
         // Create a test project and apply the plugin
         val project = ProjectBuilder.builder().build()
-        project.plugins.apply("com.example.plugin.greeting")
+        project.plugins.apply("com.iodigital.gradlebom")
 
         // Verify the result
-        Assert.assertNotNull(project.tasks.findByName("greet"))
+        Assert.assertNotNull(project.tasks.findByName("generateBom"))
     }
 }

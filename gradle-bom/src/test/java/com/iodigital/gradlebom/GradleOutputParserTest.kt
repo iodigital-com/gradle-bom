@@ -1,18 +1,17 @@
 package com.iodigital.gradlebom
 
-import org.gradle.testkit.runner.GradleRunner
-import org.junit.Assert
+import com.google.common.truth.Truth.assertThat
+import com.google.gson.GsonBuilder
+import com.iodigital.gradlebom.logic.GradleOutputParser
+import com.iodigital.gradlebom.models.GradleDependency.Component.Project
+import org.junit.Before
 import org.junit.Test
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
-import java.nio.file.Files
 
-class GradleBomPluginFunctionalTest {
+class GradleOutputParserTest {
 
     companion object {
-        //region private const val output = ...
-        private const val output = """
+        //region private const val tree = ...
+        private const val tree = """
 Reusing configuration cache.
 
 > Task :app-test:dependencies
@@ -743,49 +742,26 @@ Configuration cache entry reused.
         //endregion
     }
 
-    @Test
-    @Throws(IOException::class)
-    fun canRunTask() {
-        // Setup the test build
-        val projectDir = File("build/functionalTest")
-        val mockFile = File(projectDir, "mock.txt")
-        Files.createDirectories(projectDir.toPath())
-        writeString(File(projectDir, "settings.gradle"), "")
-        writeString(mockFile, output)
-        writeString(
-            File(projectDir, "build.gradle"),
-            """
-                plugins {
-                    id('com.iodigital.gradlebom')
-                }
-            """.trimIndent()
-        )
+    private lateinit var target: GradleOutputParser
 
-        // Run the build
-        val result = GradleRunner.create()
-            .forwardOutput()
-            .withPluginClasspath()
-            .withArguments("generateBom")
-            .withProjectDir(projectDir)
-            .withEnvironment(mapOf("mockDependencyTreeFile" to mockFile.absolutePath))
-            .build()
-
-
-        // Verify the result
-        val bomFile = "${projectDir.absolutePath}/build/outputs/bom.json"
-        val expected = "Wrote BOM file to: $bomFile"
-        Assert.assertTrue(
-            "Didn't find in output: \"$expected\"",
-            result.output.contains(expected),
-        )
-        val bom = bomFile.reader().readText().hashCode()
-        Assert.assertEquals("Expected BOM hash to be correct", -766330327, bom)
+    @Before
+    fun setUp() {
+        target = GradleOutputParser()
     }
 
-    @Throws(IOException::class)
-    private fun writeString(file: File, string: String) {
-        FileWriter(file).use { writer ->
-            writer.write(string)
-        }
+    @Test
+    fun `WHEN tree is parsed THEN dependencies are correct`() {
+        //region GIVEN
+        val projectName = "test"
+        //endregion
+        //region WHEN
+        val (root, dependencies) = target.parse(projectName, tree.reader().buffered())
+        //endregion
+        //region THEN
+        assertThat(root.component is Project).isTrue()
+        assertThat((root.component as Project).projectName).isEqualTo(":$projectName")
+        assertThat(dependencies.size).isEqualTo(156)
+        assertThat(dependencies.hashCode()).isEqualTo(-93916932)
+        //endregion
     }
 }

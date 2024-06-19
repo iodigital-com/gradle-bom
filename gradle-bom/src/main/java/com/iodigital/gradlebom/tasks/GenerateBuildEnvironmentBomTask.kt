@@ -2,6 +2,6 @@ package com.iodigital.gradlebom.tasks
 
 open class GenerateBuildEnvironmentBomTask : AbstractGenerateBomTask() {
 
-    override fun generateNestedGradleCommand() =
+    override fun createdNestedGradleCommand() =
         "./gradlew buildEnvironment"
 }

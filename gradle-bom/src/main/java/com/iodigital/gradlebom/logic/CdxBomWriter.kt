@@ -1,20 +1,18 @@
 package com.iodigital.gradlebom.logic
 
+import com.google.gson.GsonBuilder
 import com.iodigital.gradlebom.models.CdxBom
 import com.iodigital.gradlebom.models.GradleDependency
-import org.gradle.internal.impldep.com.google.gson.GsonBuilder
-import java.io.File
+import java.io.OutputStream
 
 class CdxBomWriter {
 
     fun writeCdxBom(
-        file: File,
+        output: OutputStream,
         projectName: String,
         root: GradleDependency,
         dependencies: Map<String, GradleDependency>
     ) {
-        file.parentFile.mkdirs()
-
         val cdx = CdxBom(
             metadata = CdxBom.Metadata(
                 component = root.component.toCdx().copy(
@@ -36,8 +34,7 @@ class CdxBomWriter {
             .setPrettyPrinting()
             .create()
             .toJson(cdx)
-            .let { file.writeText(it) }
-
-        println("Wrote BOM file to: ${file.absolutePath}")
+            .toByteArray()
+            .let { output.write(it) }
     }
 }

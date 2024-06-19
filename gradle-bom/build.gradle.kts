@@ -12,13 +12,14 @@ repositories {
 dependencies {
     // Use JUnit test framework for unit tests
     testImplementation("junit:junit:4.13")
+    testImplementation("com.google.truth:truth:1.4.2")
     implementation(kotlin("stdlib-jdk8"))
     implementation("com.google.code.gson:gson:2.11.0")
 }
 
 gradlePlugin {
     val gradleBom by plugins.creating {
-        id = "com.iodigital.gradlebom.plugin"
+        id = "com.iodigital.gradlebom"
         implementationClass = "com.iodigital.gradlebom.GradleBomPlugin"
     }
 }

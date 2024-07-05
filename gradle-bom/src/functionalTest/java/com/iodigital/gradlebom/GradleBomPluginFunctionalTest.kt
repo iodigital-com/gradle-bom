@@ -3160,15 +3160,16 @@ Configuration cache entry reused.
 
         // Verify the result
         val bomFile = File("${projectDir.absolutePath}/build/outputs/bom.json")
+        val bom = bomFile.reader().readText().stabilizeUuid()
         val expected = "Wrote BOM file to: $bomFile"
         Assert.assertTrue(
             "Didn't find in output: \"$expected\"",
             result.output.contains(expected),
         )
         Assert.assertEquals(
-            "Expected BOM hash to be correct",
+            "Expected BOM to be correct, but got: $bom",
             expectedBom.stabilizeUuid(),
-            bomFile.reader().readText().stabilizeUuid()
+            bom
         )
     }
 

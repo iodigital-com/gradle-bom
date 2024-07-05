@@ -17,3 +17,10 @@ jobs:
       - name: Build distribution
         id: build
         run: gradle clean check -PAzureBuildNumber="${{ github.run_id }}"
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action/linux@v2
+        if: always()
+        with:
+          files: |
+            build/reports/tests/**

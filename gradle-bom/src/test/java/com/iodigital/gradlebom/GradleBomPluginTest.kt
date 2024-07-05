@@ -16,3 +16,4 @@ class GradleBomPluginTest {
         Assert.assertNotNull(project.tasks.findByName("generateBuildEnvironmentBom"))
     }
 }
+ccc

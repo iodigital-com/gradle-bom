@@ -25,7 +25,7 @@ val buildNumber = (project.findProperty("AzureBuildNumber") ?: "debug")
 group = "com.iodigital.gradlebom"
 version = "1.0.$buildNumber"
 
-println("::set-output name=build_version::$version")
+File(System.getenv("GITHUB_OUTPUT")).appendText("build_version=$version")
 println("##vso[build.updatebuildnumber]name=${version},code=${buildNumber},buildId=${buildNumber}")
 
 @Suppress("UnstableApiUsage")

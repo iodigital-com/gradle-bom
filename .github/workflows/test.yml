@@ -4,8 +4,8 @@ name: CI
 
 on:
   pull_request:
-    paths:
-      - 'gradle-bom/**'
+    branches:
+      - master
 
   workflow_dispatch:
 

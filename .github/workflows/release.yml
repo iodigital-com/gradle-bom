@@ -37,5 +37,5 @@ jobs:
           tag_name: ${{ steps.build.outputs.build_version }}
           release_name: ${{ steps.build.outputs.build_version }}
           body: Changes in this Release
-          draft: true
+          draft: false
           prerelease: false

@@ -12,6 +12,7 @@ class GradleBomPluginTest {
         project.plugins.apply("com.iodigital.gradlebom")
 
         // Verify the result
-        Assert.assertNotNull(project.tasks.findByName("generateBom"))
+        println(project.tasks.map { it.name }.joinToString())
+        Assert.assertNotNull(project.tasks.findByName("generateBuildEnvironmentBom"))
     }
 }

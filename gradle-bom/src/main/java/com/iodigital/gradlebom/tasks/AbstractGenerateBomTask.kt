@@ -11,13 +11,8 @@ abstract class AbstractGenerateBomTask : DefaultTask() {
 
     override fun getGroup() = "Software Bill-of-Materials"
 
-    @Input
     private val projectName = project.name
-
-    @Input
     private val rootDir = project.rootDir
-
-    @Input
     private val buildDir = project.layout.buildDirectory
 
     @TaskAction

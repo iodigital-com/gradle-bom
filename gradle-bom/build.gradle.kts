@@ -2,6 +2,7 @@ plugins {
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
     `java-gradle-plugin`
     kotlin("jvm")
+    id("com.gradle.plugin-publish") version "1.2.1"
     `maven-publish`
 }
 
@@ -18,8 +19,14 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
 }
 
+val buildNumber = (project.findProperty("AzureBuildNumber") ?: "debug")
+    .toString().replace(".", "-")
+
 group = "com.iodigital.gradlebom"
-version = "1.0.9"
+version = "1.0.$buildNumber"
+
+println("::set-output name=build_version::$version")
+println("##vso[build.updatebuildnumber]name=${version},code=${buildNumber},buildId=${buildNumber}")
 
 @Suppress("UnstableApiUsage")
 gradlePlugin {
@@ -54,14 +61,4 @@ tasks.check {
 
 kotlin {
     jvmToolchain(17)
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "localPluginRepository"
-            url = uri("../../local-plugin-repository")
-
-        }
-    }
 }

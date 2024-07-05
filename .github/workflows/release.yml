@@ -1,0 +1,41 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build distribution
+        id: build
+        run: gradle clean check publishPlugins -PAzureBuildNumber="${{ github.run_id }}" -Pgradle.publish.key="${{ secrets.GRADLE_PUBLISH_KEY }}" -Pgradle.publish.secret="${{ secrets.GRADLE_PUBLISH_SECRET }}"
+
+      - name: Create tag
+        uses: tvdias/github-tagger@v0.0.1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.build.outputs.build_version }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.build.outputs.build_version }}
+          release_name: ${{ steps.build.outputs.build_version }}
+          body: Changes in this Release
+          draft: true
+          prerelease: false

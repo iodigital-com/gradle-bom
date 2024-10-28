@@ -8,13 +8,15 @@ abstract class GenericGenerateModuleBomTask : AbstractGenerateBomTask() {
 
     override fun getDescription() = "Creates a CycloneDX BOM"
 
+    private val projectPath = project.path
+
     @Input
     @Option(option = "configuration", description = "The configuration to create a bom for. Run \"./gradlew dependencies\" to get a list.")
     abstract fun getConfiguration(): Property<String>
 
     override fun createdNestedGradleCommand(): String {
         val configuration = getConfiguration().get()
-        val command = "${project.path.removeSuffix(":")}:dependencies"
+        val command = "${projectPath.removeSuffix(":")}:dependencies"
         return "./gradlew $command --configuration $configuration --no-daemon"
     }
 }

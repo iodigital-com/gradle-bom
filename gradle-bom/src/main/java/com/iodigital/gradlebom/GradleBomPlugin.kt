@@ -30,11 +30,13 @@ class GradleBomPlugin : Plugin<Project> {
             .distinct()
             .sorted()
             .forEach { config ->
-                project.tasks.register(
-                    "generate${config.replaceFirstChar { it.uppercase() }}Bom",
-                    SpecificGenerateModuleBomTask::class.java,
-                    config
-                )
+                if (project.subprojects.isEmpty()) {
+                    project.tasks.register(
+                        "generate${config.replaceFirstChar { it.uppercase() }}Bom",
+                        SpecificGenerateModuleBomTask::class.java,
+                        config
+                    )
+                }
             }
 
         subprojects.forEach { sub ->

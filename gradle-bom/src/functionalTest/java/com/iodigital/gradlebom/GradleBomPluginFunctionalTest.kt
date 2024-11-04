@@ -27,11 +27,35 @@ class GradleBomPluginFunctionalTest {
             """.trimIndent()
         )
 
+        writeString(
+            File(projectDir, "child/build.gradle"),
+            """
+               dependencies {
+               }
+            """.trimIndent()
+        )
+
+        writeString(
+            File(projectDir, "child/child/build.gradle"),
+            """
+               dependencies {
+               }
+            """.trimIndent()
+        )
+
+        writeString(
+            File(projectDir, "settings.gradle"),
+            """
+                include(":child")
+                include(":child:child")
+            """.trimIndent()
+        )
+
         // Run the build
         val result = GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("generateBom", "--configuration=test")
+            .withArguments(":generateBom", "--configuration=test")
             .withProjectDir(projectDir)
             .withEnvironment(mapOf("mockDependencyTreeFile" to mockFile.absolutePath))
             .build()
@@ -65,6 +89,7 @@ class GradleBomPluginFunctionalTest {
 
     @Throws(IOException::class)
     private fun writeString(file: File, string: String) {
+        file.parentFile.mkdirs()
         FileWriter(file).use { writer ->
             writer.write(string)
         }

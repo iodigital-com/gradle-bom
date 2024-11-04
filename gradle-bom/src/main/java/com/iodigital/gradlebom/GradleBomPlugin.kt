@@ -19,26 +19,28 @@ class GradleBomPlugin : Plugin<Project> {
     private fun Project.createTasks(): Unit = afterEvaluate {
         val suffix = "Implementation"
 
-        project.tasks.register(
-            "generateBom",
-            GenericGenerateModuleBomTask::class.java
-        )
+        // Skip if already added
+        if (!project.tasks.names.contains("generateBom")) {
+            project.tasks.register(
+                "generateBom",
+                GenericGenerateModuleBomTask::class.java
+            )
 
-        configurations
-            .filter { it.name.endsWith(suffix) }
-            .map { it.name.removeSuffix(suffix) }
-            .distinct()
-            .sorted()
-            .forEach { config ->
-                if (project.subprojects.isEmpty()) {
+            configurations
+                .filter { it.name.endsWith(suffix) }
+                .map { it.name.removeSuffix(suffix) }
+                .distinct()
+                .sorted()
+                .forEach { config ->
                     project.tasks.register(
                         "generate${config.replaceFirstChar { it.uppercase() }}Bom",
                         SpecificGenerateModuleBomTask::class.java,
                         config
                     )
                 }
-            }
+        }
 
+        // Iterate over subprojects
         subprojects.forEach { sub ->
             sub.createTasks()
         }

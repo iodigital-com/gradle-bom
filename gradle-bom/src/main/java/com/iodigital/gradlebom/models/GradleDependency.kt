@@ -25,9 +25,9 @@ data class GradleDependency(
             fun parse(component: String) = when {
                 component.endsWith("(c)") -> null
                 component.startsWith("project ") -> Project(component.split(" ")[1])
-                else -> simpleLibrary.createLibrary(component)
+                else -> libraryChangeLibrary.createLibrary(component)
                     ?: versionChangeLibrary.createLibrary(component)
-                    ?: libraryChangeLibrary.createLibrary(component)
+                    ?: simpleLibrary.createLibrary(component)
             }
 
             private fun Regex.createLibrary(component: String) = matchEntire(component)?.let {
@@ -70,6 +70,7 @@ data class GradleDependency(
                 group = group,
                 type = "library",
                 version = version,
+                purl = "pkg:maven/$group/$name@$version",
             )
         }
     }
